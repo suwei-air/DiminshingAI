@@ -3,6 +3,7 @@ function onDragStart(event) {
   posStart.x = event.offsetX;
   posStart.y = event.offsetY;
 }
+
 function onDrag(event) {
   event.preventDefault();
   var x = event.offsetX,
@@ -26,19 +27,23 @@ function onDrag(event) {
     }
   }
 }
+
 function onDragEnd(event) {
   posStart = null;
 }
+
 function onDragOver(event){
   // 如果没有添加这个，鼠标指针会显示禁止样式，
   // 松开后最后一个onDrag事件会显示鼠标指针自动跑到window的左上角，造成误判
   event.preventDefault();
 }
+
 function onTouchStart(event) {
   posStart = new Object;
   posStart.x = event.touches[0].pageX-event.target.offsetLeft;
   posStart.y = event.touches[0].pageY-event.target.offsetTop;
 }
+
 function onTouchMove(event) {
   event.preventDefault();
   var x = event.touches[0].pageX-event.target.offsetLeft,
@@ -62,6 +67,7 @@ function onTouchMove(event) {
     }
   }
 }
+
 function onTouchEnd(event) {
   posStart = null;
 }

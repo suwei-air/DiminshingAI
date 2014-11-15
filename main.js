@@ -1,43 +1,10 @@
-const RECT_SIZE = 50,
+var RECT_SIZE = 50,
   ROWS = 9,
   COLS = 9,
   SENSITIVITY = 10;
 var canvas, context;
 var map;
 var posStart = null;
-
-function swap(x, y, direction) {
-  var row = rowDest = Math.floor(y/RECT_SIZE),
-    col = colDest = Math.floor(x/RECT_SIZE);
-  if ((row==0 && direction=='up')
-    || (row==ROWS-1 && direction=='down')
-    || (col==0 && direction=='left')
-    || (col==COLS-1 && direction=='right')) {
-    return false;
-  }
-  switch (direction) {
-    case 'left':
-      --colDest;
-      break;
-    case 'right':
-      ++colDest;
-      break;
-    case 'up':
-      --rowDest;
-      break;
-    case 'down':
-      ++rowDest;
-      break;
-    default:
-      return false;
-  }
-  drawBackground();
-  var temp = map[col][row];
-  map[col][row] = map[colDest][rowDest];
-  map[colDest][rowDest] = temp;
-  drawMap();
-  return true;
-}
 
 window.addEventListener('load', function() {
   canvas = document.getElementById('main');
@@ -55,13 +22,7 @@ window.addEventListener('load', function() {
 
   context = canvas.getContext('2d');
 
-  map = new Array;
-  for (var col=0; col<COLS; ++col) {
-    map[col] = new Array;
-    for (var row=0; row<ROWS; ++row) {
-      map[col][row] = Math.floor(Math.random()*6);
-    }
-  }
+  initialize();
 
   drawBackground();
   drawMap();
