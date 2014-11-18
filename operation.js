@@ -30,7 +30,22 @@ function check(col, row) {
     && cur==map[col][row+2]) {
     return true;
   }
-  return false
+  return false;
+}
+
+function initCheck(col, row) {
+  var cur = map[col][row];
+  if (col>1
+    && cur==map[col-2][row]
+    && cur==map[col-1][row]) {
+    return true;
+  }
+  if (row>1
+    && cur==map[col][row-2]
+    && cur==map[col][row-1]) {
+    return true;
+  }
+  return false;
 }
 
 function initialize() {
@@ -38,7 +53,9 @@ function initialize() {
   for (var col=0; col<COLS; ++col) {
     map[col] = new Array;
     for (var row=0; row<ROWS; ++row) {
-      map[col][row] = Math.floor(Math.random()*6);
+      do {
+        map[col][row] = Math.floor(Math.random()*6);
+      } while (initCheck(col, row));
     }
   }
 }
