@@ -64,8 +64,8 @@ function eliminate() {
 }
 
 function swap(x, y, direction) {
-  var row = rowDest = Math.floor(y/RECT_SIZE),
-    col = colDest = Math.floor(x/RECT_SIZE);
+  var col = colDest = Math.floor(x/RECT_SIZE),
+    row = rowDest = Math.floor(y/RECT_SIZE);
   if ((row==0 && direction=='up')
     || (row==ROWS-1 && direction=='down')
     || (col==0 && direction=='left')
@@ -88,17 +88,19 @@ function swap(x, y, direction) {
     default:
       return false;
   }
-  drawBackground();
-  var temp = map[col][row];
-  map[col][row] = map[colDest][rowDest];
-  map[colDest][rowDest] = temp;
-  drawMap();
-  var checkResult = check(col,row) || check(colDest, rowDest);
-  if (!checkResult) {
-    temp = map[col][row];
+
+  animationSwap(col, row, direction, function() {
+    var temp = map[col][row];
     map[col][row] = map[colDest][rowDest];
     map[colDest][rowDest] = temp;
-    drawMap();
-  }
+    var checkResult = check(col,row) || check(colDest, rowDest);
+    if (!checkResult) {
+      animationSwap(col, row, direction, function() {
+        temp = map[col][row];
+        map[col][row] = map[colDest][rowDest];
+        map[colDest][rowDest] = temp;
+      });
+    }
+  });
   return true;
 }

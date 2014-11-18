@@ -1,7 +1,11 @@
 function drawBackground() {
+  var x = arguments[0]||0,
+    y = arguments[1]||0,
+    w = arguments[2]||COLS*RECT_SIZE,
+    h = arguments[3]||ROWS*RECT_SIZE;
   // background
   context.fillStyle = '#ccc';
-  context.fillRect(0, 0, COLS*RECT_SIZE, ROWS*RECT_SIZE);
+  context.fillRect(x, y, w, h);
   // // lines
   // context.beginPath();
   // for (var i=1; i<COLS; ++i) {
@@ -49,4 +53,63 @@ function drawMap() {
       drawOne(col*RECT_SIZE, row*RECT_SIZE, map[col][row]);
     }
   }
+}
+
+function animationSwap(col, row, direction, onFinish) {
+  var frontX = col*RECT_SIZE,
+    frontY = row*RECT_SIZE,
+    backX = col*RECT_SIZE,
+    backY = row*RECT_SIZE,
+    frontOne = map[col][row],
+    backOne,
+    frames = FPS*ANIMATION_SEC,
+    movementX = 0,
+    movementY = 0,
+    backgroundX = frontX,
+    backgroundY = frontY,
+    backgroundW = RECT_SIZE,
+    backgroundH = RECT_SIZE;
+  switch (direction) {
+    case 'up':
+      backOne = map[col][row-1];
+      backY -= RECT_SIZE;
+      movementY = -RECT_SIZE/frames;
+      backgroundY -= RECT_SIZE;
+      backgroundH += RECT_SIZE;
+      break;
+    case 'down':
+      backOne = map[col][row+1];
+      backY += RECT_SIZE;
+      movementY = RECT_SIZE/frames;
+      backgroundH += RECT_SIZE;
+      break;
+    case 'left':
+      backOne = map[col-1][row];
+      backX -= RECT_SIZE;
+      movementX = -RECT_SIZE/frames;
+      backgroundX -= RECT_SIZE;
+      backgroundW += RECT_SIZE;
+      break;
+    case 'right':
+      backOne = map[col+1][row];
+      backX += RECT_SIZE;
+      movementX = RECT_SIZE/frames;
+      backgroundW += RECT_SIZE;
+      break;
+  }
+  var ani = setInterval(function() {
+    drawBackground(backgroundX, backgroundY, backgroundW, backgroundH);
+    frontX += movementX;
+    frontY += movementY;
+    backX -= movementX;
+    backY -= movementY;
+    drawOne(backX, backY, backOne);
+    drawOne(frontX, frontY, frontOne);
+    --frames;
+    if (0==frames) {
+      // finished
+      clearInterval(ani);
+      onFinish();
+    }
+  }, 1000/FPS);
 }
