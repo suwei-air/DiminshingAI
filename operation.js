@@ -71,12 +71,12 @@ function check(col, row) {
         map[col-1][row]==map[col][row] &&
         map[col+1][row]==map[col][row] &&
         map[col+2][row]==map[col][row]) ||
-      (col>1 &&
-        col<COLS-2 &&
-        map[col-2][row]==map[col][row] &&
-        map[col-1][row]==map[col][row] &&
-        map[col+1][row]==map[col][row] &&
-        map[col+2][row]==map[col][row])) {
+      (row>1 &&
+        row<ROWS-2 &&
+        map[col][row-2]==map[col][row] &&
+        map[col][row-1]==map[col][row] &&
+        map[col][row+1]==map[col][row] &&
+        map[col][row+2]==map[col][row])) {
     result.transformType = '5';
   }
   else if (result.horizontal && result.vertical) {
@@ -118,7 +118,14 @@ function initialize() {
   }
 }
 
-function eliminate(checkResult) {
+function fall() {
+  return false;
+}
+
+function eliminate(results) {
+  animationEliminate(results, function() {
+    while (fall());
+  });
 }
 
 function swap(x, y, direction) {

@@ -22,7 +22,16 @@ function drawBackground() {
 }
 
 function drawOne(x, y, type) {
-  switch (type) {
+  if (type==6) { // ○
+    context.fillStyle = 'black';
+    context.beginPath();
+    context.arc(x+RECT_SIZE/2, y+RECT_SIZE/2, RECT_SIZE/2-2,
+      0, Math.PI*2, true);
+    context.closePath();
+    context.fill();
+    return;
+  }
+  switch (Math.floor(type)) {
     case 0:
       context.fillStyle = 'yellow';
       break;
@@ -44,7 +53,29 @@ function drawOne(x, y, type) {
     default:
       context.fillStyle = 'white';
   }
-  context.fillRect(x+2, y+2, RECT_SIZE-4, RECT_SIZE-4);
+  switch (Math.floor(type*10)%10) {
+    case 0:
+      context.fillRect(x+2, y+2, RECT_SIZE-4, RECT_SIZE-4);
+      break;
+    case 1: // |
+      context.fillRect(x+RECT_SIZE/4, y+2, RECT_SIZE/2, RECT_SIZE-4);
+      break;
+    case 2: // -
+      context.fillRect(x+2, y+RECT_SIZE/4, RECT_SIZE-4, RECT_SIZE/2);
+      break;
+    case 3: // ◇
+      context.beginPath();
+      context.moveTo(x+RECT_SIZE/2, y+2);
+      context.lineTo(x+RECT_SIZE-2, y+RECT_SIZE/2);
+      context.lineTo(x+RECT_SIZE/2, y+RECT_SIZE-2);
+      context.lineTo(x+2, y+RECT_SIZE/2);
+      context.lineTo(x+RECT_SIZE/2, y+2);
+      context.closePath();
+      context.fill();
+      break;
+    default:
+      context.fillRect(x+2, y+2, RECT_SIZE-4, RECT_SIZE-4);
+  }
 }
 
 function drawMap() {
@@ -112,4 +143,42 @@ function animationSwap(col, row, direction, onFinish) {
       onFinish();
     }
   }, 1000/FPS);
+}
+
+function animationEliminate(results, onFinish) {
+  var result, node, cur;
+  for (var posResult in results) {
+    result = results[posResult];
+    if (result.transformNode) {
+      cur = map[result.transformNode.col][result.transformNode.row];
+    }
+    for (var posNode in result.nodes) {
+      node = result.nodes[posNode];
+      drawBackground(node.col*RECT_SIZE, node.row*RECT_SIZE,
+        RECT_SIZE, RECT_SIZE);
+      map[node.col][node.row] = -1;
+    }
+    if (result.transformNode) {
+      switch (result.transformType) {
+        case '5':
+          map[result.transformNode.col][result.transformNode.row] = 6;
+          break;
+        case 'T':
+          map[result.transformNode.col][result.transformNode.row] = cur+0.3;
+          break;
+        case '4':
+          if (result.vertical) {
+            map[result.transformNode.col][result.transformNode.row] = cur+0.2;
+          }
+          else {
+            map[result.transformNode.col][result.transformNode.row] = cur+0.1;
+          }
+          break;
+      }
+      drawOne(result.transformNode.col*RECT_SIZE,
+        result.transformNode.row*RECT_SIZE,
+        map[result.transformNode.col][result.transformNode.row]);
+    }
+  }
+  onFinish();
 }
