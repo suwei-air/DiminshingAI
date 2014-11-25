@@ -119,6 +119,27 @@ function initialize() {
 }
 
 function fall() {
+  var colNodes;
+  for (var col=0; col<COLS; ++col) {
+    colNodes = new Array();
+    for (var row=ROWS-1; row>=0; --row) {
+      if (map[col][row]>=0) {
+        colNodes.push(map[col][row]);
+      }
+    }
+    var curRow = ROWS-1;
+    for (var pos in colNodes) {
+      map[col][curRow] = colNodes[pos];
+      --curRow;
+    }
+    for (curRow; curRow>=0; --curRow) {
+      map[col][curRow] = Math.floor(Math.random()*6);
+    }
+  }
+  drawBackground();
+  drawMap();
+  // TODO 消除检测
+  // TODO 动画效果
   return false;
 }
 
