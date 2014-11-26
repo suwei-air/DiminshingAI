@@ -1,0 +1,28 @@
+{
+  "name": "DiminshingAI",
+  "version": "0.0.1",
+  "author": "Su Wei <suwei.air@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/suwei-air/DiminshingAI.git"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "scripts": {
+    "start": "node index",
+    "test": "node test"
+  },
+  "dependencies": {
+    "express": "~4.10.4"
+  },
+  "devDependencies": {
+    "mocha": "~2.0.1"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.github.com/mochajs/mocha/master/LICENSE"
+    }
+  ]
+}
