@@ -93,7 +93,6 @@ function animationSwap(col, row, direction, onFinish) {
     backY = row*RECT_SIZE,
     frontOne = map[col][row],
     backOne,
-    frames = FPS*ANIMATION_SEC,
     movementX = 0,
     movementY = 0,
     backgroundX = frontX,
@@ -104,45 +103,59 @@ function animationSwap(col, row, direction, onFinish) {
     case 'up':
       backOne = map[col][row-1];
       backY -= RECT_SIZE;
-      movementY = -RECT_SIZE/frames;
+      movementY = -RECT_SIZE;
       backgroundY -= RECT_SIZE;
       backgroundH += RECT_SIZE;
       break;
     case 'down':
       backOne = map[col][row+1];
       backY += RECT_SIZE;
-      movementY = RECT_SIZE/frames;
+      movementY = RECT_SIZE;
       backgroundH += RECT_SIZE;
       break;
     case 'left':
       backOne = map[col-1][row];
       backX -= RECT_SIZE;
-      movementX = -RECT_SIZE/frames;
+      movementX = -RECT_SIZE;
       backgroundX -= RECT_SIZE;
       backgroundW += RECT_SIZE;
       break;
     case 'right':
       backOne = map[col+1][row];
       backX += RECT_SIZE;
-      movementX = RECT_SIZE/frames;
+      movementX = RECT_SIZE;
       backgroundW += RECT_SIZE;
       break;
   }
-  var ani = setInterval(function() {
+  var startTime = null;
+  var startFrontX = frontX,
+    startFrontY = frontY,
+    startBackX = backX,
+    startBackY = backY;
+  var ani = function(time) {
+    if (null === startTime) {
+      startTime = time;
+    }
     drawBackground(backgroundX, backgroundY, backgroundW, backgroundH);
-    frontX += movementX;
-    frontY += movementY;
-    backX -= movementX;
-    backY -= movementY;
+    frontX = startFrontX + movementX * (time - startTime) / (ANIMATION_SEC * 1000);
+    frontY = startFrontY + movementY * (time - startTime) / (ANIMATION_SEC * 1000);
+    backX = startBackX - movementX * (time - startTime) / (ANIMATION_SEC * 1000);
+    backY = startBackY - movementY * (time - startTime) / (ANIMATION_SEC * 1000);
     drawOne(backX, backY, backOne);
     drawOne(frontX, frontY, frontOne);
-    --frames;
-    if (0===frames) {
-      // finished
-      clearInterval(ani);
+    if (time - startTime < ANIMATION_SEC * 1000) {
+      requestAnimationFrame(ani);
+    }
+    else {
       onFinish();
     }
-  }, 1000/FPS);
+  };
+  var requestAnimationFrame = window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    window.oRequestAnimationFrame;
+  requestAnimationFrame(ani);
 }
 
 function animationEliminate(results, onFinish) {

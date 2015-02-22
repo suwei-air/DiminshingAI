@@ -2,7 +2,6 @@ var RECT_SIZE = 50,
   ROWS = 9,
   COLS = 9,
   SENSITIVITY = 10,
-  FPS = 50,
   ANIMATION_SEC = 0.3;
 var canvas, context;
 var map;
