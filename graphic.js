@@ -137,7 +137,7 @@ function animationSwap(col, row, direction, onFinish) {
     drawOne(backX, backY, backOne);
     drawOne(frontX, frontY, frontOne);
     --frames;
-    if (0==frames) {
+    if (0===frames) {
       // finished
       clearInterval(ani);
       onFinish();

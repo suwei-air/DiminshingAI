@@ -1,49 +1,39 @@
 function check(col, row) {
   var cur = map[col][row],
-    result = new Object();
-  result.nodes = new Array();
-  if (col>1
-    && cur==map[col-2][row]
-    && cur==map[col-1][row]) {
+    result = {};
+  result.nodes = [];
+  if (col>1 && cur==map[col-2][row] && cur==map[col-1][row]) {
     result.nodes.push({'col': col-2, 'row': row});
     result.nodes.push({'col': col-1, 'row': row});
     result.nodes.push({'col': col, 'row': row});
     result.horizontal = true;
   }
-  if (col>0 && col<COLS-1
-    && cur==map[col+1][row]
-    && cur==map[col-1][row]) {
-    if (result.nodes.length==0) {
+  if (col>0 && col<COLS-1 && cur==map[col+1][row] && cur==map[col-1][row]) {
+    if (result.nodes.length===0) {
       result.nodes.push({'col': col-1, 'row': row});
       result.nodes.push({'col': col, 'row': row});
     }
     result.nodes.push({'col': col+1, 'row': row});
     result.horizontal = true;
   }
-  if (col<COLS-2
-    && cur==map[col+1][row]
-    && cur==map[col+2][row]) {
-    if (result.nodes.length==0) {
+  if (col<COLS-2 && cur==map[col+1][row] && cur==map[col+2][row]) {
+    if (result.nodes.length===0) {
       result.nodes.push({'col': col, 'row': row});
       result.nodes.push({'col': col+1, 'row': row});
     }
     result.nodes.push({'col': col+2, 'row': row});
     result.horizontal = true;
   }
-  if (row>1
-    && cur==map[col][row-2]
-    && cur==map[col][row-1]) {
-    if (result.nodes.length==0) {
+  if (row>1 && cur==map[col][row-2] && cur==map[col][row-1]) {
+    if (result.nodes.length===0) {
       result.nodes.push({'col': col, 'row': row});
     }
     result.nodes.push({'col': col, 'row': row-2});
     result.nodes.push({'col': col, 'row': row-1});
     result.vertical = true;
   }
-  if (row>0 && row<ROWS-1
-    && cur==map[col][row+1]
-    && cur==map[col][row-1]) {
-    if (result.nodes.length==0) {
+  if (row>0 && row<ROWS-1 && cur==map[col][row+1] && cur==map[col][row-1]) {
+    if (result.nodes.length===0) {
       result.nodes.push({'col': col, 'row': row});
     }
     if (!result.vertical) {
@@ -52,10 +42,8 @@ function check(col, row) {
     result.nodes.push({'col': col, 'row': row+1});
     result.vertical = true;
   }
-  if (row<ROWS-2
-    && cur==map[col][row+1]
-    && cur==map[col][row+2]) {
-    if (result.nodes.length==0) {
+  if (row<ROWS-2 && cur==map[col][row+1] && cur==map[col][row+2]) {
+    if (result.nodes.length===0) {
       result.nodes.push({'col': col, 'row': row});
     }
     if (!result.vertical) {
@@ -93,23 +81,19 @@ function check(col, row) {
 
 function initCheck(col, row) {
   var cur = map[col][row];
-  if (col>1
-    && cur==map[col-2][row]
-    && cur==map[col-1][row]) {
+  if (col>1 && cur==map[col-2][row] && cur==map[col-1][row]) {
     return true;
   }
-  if (row>1
-    && cur==map[col][row-2]
-    && cur==map[col][row-1]) {
+  if (row>1 && cur==map[col][row-2] && cur==map[col][row-1]) {
     return true;
   }
   return false;
 }
 
 function initialize() {
-  map = new Array;
+  map = [];
   for (var col=0; col<COLS; ++col) {
-    map[col] = new Array;
+    map[col] = [];
     for (var row=0; row<ROWS; ++row) {
       do {
         map[col][row] = Math.floor(Math.random()*6);
@@ -121,7 +105,7 @@ function initialize() {
 function fall() {
   var colNodes;
   for (var col=0; col<COLS; ++col) {
-    colNodes = new Array();
+    colNodes = [];
     for (var row=ROWS-1; row>=0; --row) {
       if (map[col][row]>=0) {
         colNodes.push(map[col][row]);
@@ -150,12 +134,14 @@ function eliminate(results) {
 }
 
 function swap(x, y, direction) {
-  var col = colDest = Math.floor(x/RECT_SIZE),
-    row = rowDest = Math.floor(y/RECT_SIZE);
-  if ((row==0 && direction=='up')
-    || (row==ROWS-1 && direction=='down')
-    || (col==0 && direction=='left')
-    || (col==COLS-1 && direction=='right')) {
+  var col = Math.floor(x/RECT_SIZE),
+    colDest = Math.floor(x/RECT_SIZE),
+    row = Math.floor(y/RECT_SIZE),
+    rowDest = Math.floor(y/RECT_SIZE);
+  if ((row===0 && direction=='up') ||
+    (row===ROWS-1 && direction=='down') ||
+    (col===0 && direction=='left') ||
+    (col===COLS-1 && direction=='right')) {
     return false;
   }
   switch (direction) {
@@ -180,16 +166,18 @@ function swap(x, y, direction) {
     map[col][row] = map[colDest][rowDest];
     map[colDest][rowDest] = temp;
     var checkResult,
-      results = new Array();
+      results = [];
     if (map[col][row]!=map[colDest][rowDest]) {
-      if (checkResult = check(col, row)) {
+      checkResult = check(col, row);
+      if (checkResult) {
         results.push(checkResult);
       }
-      if (checkResult = check(colDest, rowDest)) {
+      checkResult = check(colDest, rowDest);
+      if (checkResult) {
         results.push(checkResult);
       }
     }
-    if (results.length==0) {
+    if (results.length===0) {
       animationSwap(col, row, direction, function() {
         temp = map[col][row];
         map[col][row] = map[colDest][rowDest];

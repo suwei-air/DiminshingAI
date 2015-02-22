@@ -1,7 +1,9 @@
 function onDragStart(event) {
-  posStart = new Object;
+  posStart = {};
   posStart.x = event.offsetX;
   posStart.y = event.offsetY;
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData('Text', ''); // FireFox要求设置数据，否则无drag事件
 }
 
 function onDrag(event) {
@@ -39,7 +41,7 @@ function onDragOver(event){
 }
 
 function onTouchStart(event) {
-  posStart = new Object;
+  posStart = {};
   posStart.x = event.touches[0].pageX-event.target.offsetLeft;
   posStart.y = event.touches[0].pageY-event.target.offsetTop;
 }
